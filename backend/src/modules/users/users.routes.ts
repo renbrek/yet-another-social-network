@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
 import {
-  getUsersHandler,
   loginHandler,
   registerUserHandler,
+  getCurrentUserHandler,
+  getUsersHandler,
 } from './users.controller';
 import { $ref } from './users.schema';
 
@@ -36,9 +37,27 @@ async function usersRoutes(server: FastifyInstance) {
   server.get(
     '/',
     {
-      preHandler: [server.authenticate],
+      onRequest: [server.authenticate],
+      schema: {
+        response: {
+          200: $ref('usersResponseSchema'),
+        },
+      },
     },
     getUsersHandler
+  );
+
+  server.get(
+    '/current',
+    {
+      onRequest: [server.authenticate],
+      schema: {
+        response: {
+          200: $ref('userResponseSchema'),
+        },
+      },
+    },
+    getCurrentUserHandler
   );
 }
 

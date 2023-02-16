@@ -2,7 +2,12 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { server } from '../../app';
 import { verifyPassword } from '../../utils/hash';
 import { CreateUserInput, LoginInput } from './users.schema';
-import { createUser, findUserByEmail, findUsers } from './users.service';
+import {
+  createUser,
+  findUserByEmail,
+  findUserById,
+  findUsers,
+} from './users.service';
 
 export async function registerUserHandler(
   request: FastifyRequest<{
@@ -29,7 +34,7 @@ export async function loginHandler(
   reply: FastifyReply
 ) {
   const body = request.body;
-
+  
   const user = await findUserByEmail(body.email);
 
   if (!user)
@@ -60,8 +65,20 @@ export async function loginHandler(
   });
 }
 
-export async function getUsersHandler() {
+export async function getUsersHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
   const users = await findUsers();
 
   return users;
+}
+
+export async function getCurrentUserHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const user = await findUserById(request.user.id);
+
+  return user;
 }
