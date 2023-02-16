@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { server } from '../../app';
 import { verifyPassword } from '../../utils/hash';
 import { CreateUserInput, LoginInput } from './users.schema';
-import { createUser, findUserByEmail } from './users.service';
+import { createUser, findUserByEmail, findUsers } from './users.service';
 
 export async function registerUserHandler(
   request: FastifyRequest<{
@@ -46,7 +46,10 @@ export async function loginHandler(
   if (isCorrectPassword) {
     const { password, salt, createdAt, ...payload } = user;
 
-    const accessToken = server.jwt.sign({ ...payload }, {expiresIn: 7 * 24 * 60 * 60});
+    const accessToken = server.jwt.sign(
+      { ...payload },
+      { expiresIn: 7 * 24 * 60 * 60 }
+    );
     return reply.code(200).send({
       accessToken,
     });
@@ -55,4 +58,10 @@ export async function loginHandler(
   return reply.code(401).send({
     message: 'Invalid email or password',
   });
+}
+
+export async function getUsersHandler() {
+  const users = await findUsers();
+
+  return users;
 }
