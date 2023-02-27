@@ -1,0 +1,19 @@
+.sidebar {
+  width: 15rem;
+  background-color: rgb(24, 27, 30);
+  position: relative;
+}
+
+.sidebar:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15rem;
+  height: 40px;
+  width: 40px;
+  border-top-left-radius: 50%;
+}
+.sidebar::before {
+  z-index: -1;
+  box-shadow: -20px 0px 0px 0 rgb(24, 27, 30);
+}
